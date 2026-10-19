@@ -293,7 +293,7 @@ score = knn.score(X_test_s, y_test)      # 分类准确率
 
 | 方法 | 作用 | 返回 |
 |---|---|---|
-| `fit(X, y)` | 保存训练数据、构建索引 | `self` |
+| `fit(X, y)` | 训练，保存训练数据、构建索引 | `self` |
 | `predict(X)` | 预测标签 | 形状 `(n_samples,)` |
 | `predict_proba(X)` | 类别概率（邻居投票占比） | 形状 `(n_samples, n_classes)` |
 | `kneighbors(X, n_neighbors=None)` | 查询最近邻 | `(distances, indices)` |
