@@ -121,7 +121,7 @@ def iris_model_evaluate() :
     # 6.模型评估
     # 方式一：直接评分，基于 训练集的特征 和 训练集的标签
     print(f"正确率(准确率): {model.score(x_train, y_train)}")
-    print(f"正确率(准确率): {model.score(x_test, y_test)}")
+    # print(f"正确率(准确率): {model.score(x_test, y_test)}")
     # 方式二：基于 测试集的标签 和 预测结果 进行评分
     print(f"正确率(准确率): {accuracy_score(y_test, y_pred=y_pre)}")
 
