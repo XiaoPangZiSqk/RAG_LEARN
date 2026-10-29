@@ -12,7 +12,7 @@ from evaluation.evalute_rag import *
 
 # Load environment variables from a .env file (e.g., OpenAI API key)
 load_dotenv()
-os.environ["OPENAI_API_KEY"] = os.getenv('OPENAI_API_KEY')
+DS_API_KEY = os.getenv('DS_API_KEY')
 
 
 class SimpleRAG:
@@ -38,7 +38,7 @@ class SimpleRAG:
         self.time_records = {'Chunking': time.time() - start_time}
         print(f"Chunking Time: {self.time_records['Chunking']:.2f} seconds")
 
-        # Create a retriever from the vector store
+        # 从向量存储中创建一个检索器
         self.chunks_query_retriever = self.vector_store.as_retriever(search_kwargs={"k": n_retrieved})
 
     def run(self, query):

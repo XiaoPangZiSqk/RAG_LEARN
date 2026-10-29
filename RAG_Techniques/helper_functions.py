@@ -14,6 +14,11 @@ import textwrap
 import numpy as np
 from enum import Enum
 
+import os
+from dotenv import load_dotenv
+
+load_dotenv()  # 读取 RAG_Techniques/.env
+
 
 def replace_t_with_space(list_of_documents):
     """
@@ -43,6 +48,16 @@ def text_wrap(text, width=120):
         str: The wrapped text.
     """
     return textwrap.fill(text, width=width)
+
+def get_embeddings() -> OpenAIEmbeddings:
+    """统一的 embedding 入口，换供应商只改这里。"""
+    return OpenAIEmbeddings(
+        model=os.getenv("BAILIAN_EMBEDDING_MODEL", "text-embedding-v4"),
+        api_key=os.getenv("BAILIAN_EMBEDDING_API_KEY"),
+        base_url=os.getenv("BAILIAN_BASE_URL"),
+        check_embedding_ctx_length=False,  # 关键，见下方“坑 3”
+        chunk_size=10,                     # 关键，见下方“坑 2”
+    )
 
 
 def encode_pdf(path, chunk_size=1000, chunk_overlap=200):
@@ -118,9 +133,9 @@ def encode_from_string(content, chunk_size=1000, chunk_overlap=200):
             chunk.metadata['relevance_score'] = 1.0
 
         # Generate embeddings and create the vector store
-        embeddings = OpenAIEmbeddings()
         vectorstore = FAISS.from_documents(chunks, embeddings)
 
+        embeddings = OpenAIEmbeddings()
     except Exception as e:
         raise RuntimeError(f"An error occurred during the encoding process: {str(e)}")
 
@@ -295,7 +310,7 @@ async def exponential_backoff(attempt):
 async def retry_with_exponential_backoff(coroutine, max_retries=5):
     """
     Retries a coroutine using exponential backoff upon encountering a RateLimitError.
-    
+
     Args:
         coroutine: The coroutine to be executed.
         max_retries: The maximum number of retry attempts.
@@ -320,7 +335,6 @@ async def retry_with_exponential_backoff(coroutine, max_retries=5):
 
     # If max retries are reached without success, raise an exception
     raise Exception("Max retries reached")
-
 
 # Enum class representing different embedding providers
 class EmbeddingProvider(Enum):
